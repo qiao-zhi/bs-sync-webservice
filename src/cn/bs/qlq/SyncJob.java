@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -18,6 +20,8 @@ import cn.infohow.mes.ei.remote.ManuOrderDetailInfo;
 import cn.infohow.mes.ei.remote.VinGenerateInfo;
 
 public class SyncJob {
+
+	private static final ScheduledExecutorService batchTaskPool = Executors.newScheduledThreadPool(1);
 
 	public static void main(String[] args) {
 		syncVinQueue();
@@ -42,7 +46,6 @@ public class SyncJob {
 		if (CollectionUtils.isNotEmpty(selectVinListForService)) {
 			try {
 				List<Map<String, Object>> beansToMaps = BeanUtils.beansToMaps(selectVinListForService, true, true);
-				FileUtils.writeStringToFile(new File("result.txt"), beansToMaps.toString(), "UTF-8", true);
 			} catch (Exception ignored) {
 				// ignored
 			}
