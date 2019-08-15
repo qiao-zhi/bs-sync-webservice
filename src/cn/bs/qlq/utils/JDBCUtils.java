@@ -93,8 +93,4 @@ public class JDBCUtils {
 			// 记录日志
 		}
 	}
-
-	public static void main(String[] args) {
-		executeSQL("select * from ");
-	}
 }
