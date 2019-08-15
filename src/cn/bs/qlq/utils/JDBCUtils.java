@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * 模拟一个简单的连接池并且执行SQL
  * 
@@ -95,4 +94,7 @@ public class JDBCUtils {
 		}
 	}
 
+	public static void main(String[] args) {
+		executeSQL("select * from ");
+	}
 }
