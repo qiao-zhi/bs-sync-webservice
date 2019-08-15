@@ -57,7 +57,7 @@ public class SyncJob {
 			// ignored
 		}
 
-		long initialDelay = curDateSecneds - System.currentTimeMillis();
+		long initialDelay = (curDateSecneds - System.currentTimeMillis()) / 1000;
 		batchTaskPool.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
