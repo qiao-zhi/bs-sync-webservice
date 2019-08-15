@@ -31,14 +31,14 @@ public class SyncJob {
 	private static String defaultQueryVinSQL = "select count(*) from VINLIST where PRDSEQ = ?";
 	private static final String queryVinSQL = StringUtils.defaultIfBlank(ResourcesUtil.getValue("sync", "queryVin"),
 			defaultQueryVinSQL);
-	private static String defaultInsertVinSQL = "insert into `vinlist` (`FCCODE`, `MONNUN`, `MTCODE`, `PLCODE`, `PRDDATE`, `PRDSEQ`, `PRIORITY`, `SUCCFLG`, `SUNROOF`, `VININDEX`) values (?,?,?,?,?,?,?,?,?,?)";
+	private static String defaultInsertVinSQL = "insert into vinlist (FCCODE, MONNUN, MTCODE, PLCODE, PRDDATE, PRDSEQ, PRIORITY, SUCCFLG, SUNROOF, VININDEX) values (?,?,?,?,?,?,?,?,?,?)";
 	private static final String insertVinSQL = StringUtils
 			.defaultIfBlank(ResourcesUtil.getValue("sync", "insertVinSQL"), defaultInsertVinSQL);
 
 	private static String defaultQueryOrderSQL = "select count(*) from ORDERLIST where MONUM = ?";
 	private static final String queryOrderSQL = StringUtils
 			.defaultIfBlank(ResourcesUtil.getValue("sync", "queryOrderSQL"), defaultQueryOrderSQL);
-	private static String defaultInsertOrderSQL = "insert into `ORDERLIST` (`MONUM`, `MOTYPE`, `MTCODE`, `PLCODE`, `CARTYPE`, `PRIORITY`, `PROSCHEDULDATE`, `PROSCHEDULNUM`, `SPECIALFLG`) values (?,?,?,?,?,?,?,?,?)";
+	private static String defaultInsertOrderSQL = "insert into ORDERLIST (MONUM, MOTYPE, MTCODE, PLCODE, CARTYPE, PRIORITY, PROSCHEDULDATE, PROSCHEDULNUM, SPECIALFLG) values (?,?,?,?,?,?,?,?,?)";
 	private static final String insertOrderSQL = StringUtils
 			.defaultIfBlank(ResourcesUtil.getValue("sync", "insertOrderSQL"), defaultInsertOrderSQL);
 
@@ -117,6 +117,8 @@ public class SyncJob {
 			String sunroof = StringUtils.defaultString(info.getSunroof(), "");
 			String vinindex = StringUtils.defaultString(info.getVinindex(), "");
 
+			log.debug("参数: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", fccode, monnum, mtcode, plcode, predate, preseq,
+					priority, succflag, sunroof, vinindex);
 			JDBCUtils.executeSQL(insertVinSQL, fccode, monnum, mtcode, plcode, predate, preseq, priority, succflag,
 					sunroof, vinindex);
 		}
@@ -175,6 +177,8 @@ public class SyncJob {
 				specialflag = "是";
 			}
 
+			log.debug("参数: {}, {}, {}, {}, {}, {}, {}, {}, {}", monum, motype, mtcode, plcode, cartype, priority,
+					proscheduldate, proschedulnum, specialflag);
 			JDBCUtils.executeSQL(insertOrderSQL, monum, motype, mtcode, plcode, cartype, priority, proscheduldate,
 					proschedulnum, specialflag);
 		}

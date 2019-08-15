@@ -90,7 +90,8 @@ public class JDBCUtils {
 				connections.add(conn);
 			}
 		} catch (Exception e) {
-			// 记录日志
+			log.error("链接数据库错误", e);
 		}
 	}
+
 }
