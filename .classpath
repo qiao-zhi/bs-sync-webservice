@@ -5,9 +5,9 @@
 	<classpathentry kind="lib" path="lib/commons-lang3-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.2.jar"/>
 	<classpathentry kind="lib" path="lib/commons-io-2.2.jar"/>
-	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-api-1.5.10.jar"/>
-	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.10.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.16.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/.org.sf.feeling.decompiler1565575270157/source/log4j-1.2.16-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.5.10.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/.org.sf.feeling.decompiler1565575270157/source/slf4j-api-1.5.10-sources.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-log4j12-1.5.10.jar" sourcepath="C:/Users/ADMINI~1/AppData/Local/Temp/.org.sf.feeling.decompiler1565575270157/source/slf4j-log4j12-1.5.10-sources.jar"/>
 	<classpathentry kind="lib" path="lib/ojdbc6.jar"/>
 	<classpathentry kind="lib" path="lib/sqljdbc4.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.37-bin.jar"/>
