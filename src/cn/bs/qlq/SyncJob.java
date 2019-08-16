@@ -48,7 +48,7 @@ public class SyncJob {
 
 		long curDateSecneds = 0;
 		try {
-			String time = "23:00:00";
+			String time = "21:00:00";
 			DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 			DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
 			Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
@@ -57,14 +57,16 @@ public class SyncJob {
 			// ignored
 		}
 
+		// 单位是s
 		long initialDelay = (curDateSecneds - System.currentTimeMillis()) / 1000;
+		int periodOneDaySeconds = 1 * 24 * 60 * 60;
 		batchTaskPool.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				syncVinQueue();
 				syncOrderList();
 			}
-		}, initialDelay, 1, TimeUnit.DAYS);
+		}, initialDelay, periodOneDaySeconds, TimeUnit.SECONDS);
 	}
 
 	/**
