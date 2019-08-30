@@ -34,6 +34,9 @@ public class SyncJob {
 	private static String defaultInsertVinSQL = "insert into vinlist (FCCODE, MONNUN, MTCODE, PLCODE, PRDDATE, PRDSEQ, PRIORITY, SUCCFLG, SUNROOF, VININDEX) values (?,?,?,?,?,?,?,?,?,?)";
 	private static final String insertVinSQL = StringUtils
 			.defaultIfBlank(ResourcesUtil.getValue("sync", "insertVinSQL"), defaultInsertVinSQL);
+	private static String defaultUpdateVinSQL = "update vinlist set FCCODE = ?,MONNUN=?, MTCODE=?, PLCODE=?, PRDDATE=?, PRDSEQ=?, PRIORITY=?, SUCCFLG=?, SUNROOF=?, VININDEX=? where PRDSEQ=?  ";
+	private static final String updateVinSQL = StringUtils
+			.defaultIfBlank(ResourcesUtil.getValue("sync", "updateVinSQL"), defaultUpdateVinSQL);
 
 	private static String defaultQueryOrderSQL = "select count(*) from ORDERLIST where MONUM = ?";
 	private static final String queryOrderSQL = StringUtils
@@ -41,6 +44,9 @@ public class SyncJob {
 	private static String defaultInsertOrderSQL = "insert into ORDERLIST (MONUM, MOTYPE, MTCODE, PLCODE, CARTYPE, PRIORITY, PROSCHEDULDATE, PROSCHEDULNUM, SPECIALFLG) values (?,?,?,?,?,?,?,?,?)";
 	private static final String insertOrderSQL = StringUtils
 			.defaultIfBlank(ResourcesUtil.getValue("sync", "insertOrderSQL"), defaultInsertOrderSQL);
+	private static String defaultUpdateOrderSQL = "update ORDERLIST set MONUM=?, MOTYPE=?, MTCODE=?, PLCODE=?, CARTYPE=?, PRIORITY=?, PROSCHEDULDATE=?, PROSCHEDULNUM=?, SPECIALFLG=? where MONUM=?";
+	private static final String updateOrderSQL = StringUtils
+			.defaultIfBlank(ResourcesUtil.getValue("sync", "updateOrderSQL"), defaultUpdateOrderSQL);
 
 	public static void main(String[] args) throws ParseException {
 		syncVinQueue();
@@ -48,7 +54,7 @@ public class SyncJob {
 
 		long curDateSecneds = 0;
 		try {
-			String time = "21:00:00";
+			String time = "23:00:00";
 			DateFormat dateFormat = new SimpleDateFormat("yy-MM-dd HH:mm:ss");
 			DateFormat dayFormat = new SimpleDateFormat("yy-MM-dd");
 			Date curDate = dateFormat.parse(dayFormat.format(new Date()) + " " + time);
@@ -102,12 +108,6 @@ public class SyncJob {
 				continue;
 			}
 
-			Object result = JDBCUtils.executeSQL(queryVinSQL, preseq);
-			if (result != null && Integer.valueOf(result.toString()) > 0) {
-				log.error("存在相同的数据, preseq -> {}, 跳过", preseq);
-				continue;
-			}
-
 			String fccode = StringUtils.defaultString(info.getFccode(), "");
 			String monnum = StringUtils.defaultString(info.getMonnum(), "");
 			String mtcode = StringUtils.defaultString(info.getMtcode(), "");
@@ -121,6 +121,15 @@ public class SyncJob {
 
 			log.debug("参数: {}, {}, {}, {}, {}, {}, {}, {}, {}, {}", fccode, monnum, mtcode, plcode, predate, preseq,
 					priority, succflag, sunroof, vinindex);
+
+			Object result = JDBCUtils.executeSQL(queryVinSQL, preseq);
+			if (result != null && Integer.valueOf(result.toString()) > 0) {
+				log.debug("存在相同的数据, preseq -> {}, update", preseq);
+				JDBCUtils.executeSQL(updateVinSQL, fccode, monnum, mtcode, plcode, predate, preseq, priority, succflag,
+						sunroof, vinindex, preseq);
+				continue;
+			}
+
 			JDBCUtils.executeSQL(insertVinSQL, fccode, monnum, mtcode, plcode, predate, preseq, priority, succflag,
 					sunroof, vinindex);
 		}
@@ -159,12 +168,6 @@ public class SyncJob {
 				continue;
 			}
 
-			Object result = JDBCUtils.executeSQL(queryOrderSQL, monum);
-			if (result != null && Integer.valueOf(result.toString()) > 0) {
-				log.error("存在相同的数据, monum -> {}, 跳过", monum);
-				continue;
-			}
-
 			String motype = StringUtils.defaultString(order.getMotype(), "");
 			String mtcode = StringUtils.defaultString(order.getMtcode(), "");
 			String plcode = StringUtils.defaultString(order.getPlcode(), "");
@@ -181,6 +184,15 @@ public class SyncJob {
 
 			log.debug("参数: {}, {}, {}, {}, {}, {}, {}, {}, {}", monum, motype, mtcode, plcode, cartype, priority,
 					proscheduldate, proschedulnum, specialflag);
+
+			Object result = JDBCUtils.executeSQL(queryOrderSQL, monum);
+			if (result != null && Integer.valueOf(result.toString()) > 0) {
+				JDBCUtils.executeSQL(updateOrderSQL, monum, motype, mtcode, plcode, cartype, priority, proscheduldate,
+						proschedulnum, specialflag, monum);
+				log.debug("存在相同的数据, monum -> {}, update", monum);
+				continue;
+			}
+
 			JDBCUtils.executeSQL(insertOrderSQL, monum, motype, mtcode, plcode, cartype, priority, proscheduldate,
 					proschedulnum, specialflag);
 		}
