@@ -1,5 +1,7 @@
 package cn.bs.qlq;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,18 @@ import cn.infohow.mes.ei.remote.VinGenerateInfo;
 public class SyncJob {
 
 	private static final ScheduledExecutorService batchTaskPool = Executors.newScheduledThreadPool(1);
+
+	private static URL DEFALUT_URL = null;
+
+	static {
+		try {
+			DEFALUT_URL = new URL(StringUtils.defaultIfBlank(ResourcesUtil.getValue("DEFALUT_URL", "queryVin"),
+					"http://10.98.100.160:7001/ghis/remote/chxOutsideData/ChxOutsideDataRemoteService?wsdl"));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+	}
 
 	private static final Logger log = LoggerFactory.getLogger(SyncJob.class);
 
@@ -83,7 +97,8 @@ public class SyncJob {
 		String startDate = StringUtils.defaultIfBlank(ResourcesUtil.getValue("sync", "vinQueueStartDate"), currentData);
 		String endDate = StringUtils.defaultIfBlank(ResourcesUtil.getValue("sync", "vinQueueEndDate"), "");
 
-		ChxOutsideDataRemoteServiceService chxOutsideDataRemoteServiceService = new ChxOutsideDataRemoteServiceService();
+		ChxOutsideDataRemoteServiceService chxOutsideDataRemoteServiceService = new ChxOutsideDataRemoteServiceService(
+				DEFALUT_URL);
 		ChxOutsideDataRemoteService chxOutsideDataRemoteService = chxOutsideDataRemoteServiceService
 				.getChxOutsideDataRemoteServicePort();
 		List<VinGenerateInfo> vinGenerateInfos = chxOutsideDataRemoteService.selectVinListForService(startDate,
@@ -143,7 +158,8 @@ public class SyncJob {
 		String intDay = StringUtils.defaultIfBlank(ResourcesUtil.getValue("sync", "orderListIntDay"), "1");
 		String flowLine = StringUtils.defaultIfBlank(ResourcesUtil.getValue("sync", "orderListFlowLine"), "xtmq0101");
 
-		ChxOutsideDataRemoteServiceService chxOutsideDataRemoteServiceService = new ChxOutsideDataRemoteServiceService();
+		ChxOutsideDataRemoteServiceService chxOutsideDataRemoteServiceService = new ChxOutsideDataRemoteServiceService(
+				DEFALUT_URL);
 		ChxOutsideDataRemoteService chxOutsideDataRemoteService = chxOutsideDataRemoteServiceService
 				.getChxOutsideDataRemoteServicePort();
 		List<ManuOrderDetailInfo> orders = chxOutsideDataRemoteService.selectManuOrderDetilListService(startDate,
